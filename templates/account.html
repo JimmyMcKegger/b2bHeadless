@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopify Auth</title>
+</head>
+<body>
+    <h1>Welcome to your account</h1>
+    <p>Here are your account details:</p>
+
+    {% if account_info.data.customer %}
+        <h2>Customer Information</h2>
+        <ul>
+            <li><strong>Email Address:</strong> {{ account_info.data.customer.emailAddress.emailAddress }}</li>
+            <li><strong>First Name:</strong> {{ account_info.data.customer.firstName }}</li>
+            <li><strong>Last Name:</strong> {{ account_info.data.customer.lastName }}</li>
+            <li><strong>Tags:</strong> {{ account_info.data.customer.tags | join(', ') }}</li>
+        </ul>
+    {% else %}
+        <p>No customer information available.</p>
+    {% endif %}
+
+    <button onclick="window.location.href='/logout'"">Logout</button>
+</body>
+</html>
