@@ -50,3 +50,29 @@ DOMAIN=your-ngrok-domain.ngrok-free.app
 poetry shell && uvicorn main:app --reload
 ```
 
+### 6. Optionally add an exexutable script in your PATH to startup the app:
+
+Example script:
+```
+#!/bin/zsh
+
+new tmux session and detach
+SESSION="customer_accounts_api"
+tmux new-session -d -s $SESSION
+
+# Split the window into two panes vertically
+tmux split-window -v
+
+# Select pane 0, navigate to the project directory, and start ngrok
+tmux select-pane -t 0
+tmux send-keys -t $SESSION "cd ~/path/to/project/customerAccounts" C-m
+tmux send-keys -t $SESSION "ngrok http 8000 --domain=your-domain.ngrok-free.app" C-m
+
+# Select pane 1, navigate to the project directory, and start uvicorn
+tmux select-pane -t 1
+tmux send-keys -t $SESSION "cd ~/path/to/project/customerAccounts" C-m
+tmux send-keys -t $SESSION "poetry run uvicorn main:app --reload" C-m
+
+# Attach to the tmux session
+tmux attach-session -t $SESSION
+```
