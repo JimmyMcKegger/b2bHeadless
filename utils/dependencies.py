@@ -13,23 +13,30 @@ REDIRECT_URI = f"https://{DOMAIN}/callback"
 LOGOUT_URL = f"https://{DOMAIN}/logout"
 SCOPE = quote("openid email https://api.customers.com/auth/customer.graphql")
 
+
 def get_shop_id():
     return SHOP_ID
+
 
 def get_domain():
     return DOMAIN
 
+
 def get_client_id():
     return CLIENT_ID
+
 
 def get_client_secret():
     return CLIENT_SECRET
 
+
 def get_redirect_uri():
     return REDIRECT_URI
 
+
 def get_logout_url():
     return LOGOUT_URL
+
 
 def get_scope():
     return SCOPE

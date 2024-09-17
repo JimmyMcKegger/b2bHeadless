@@ -49,6 +49,7 @@ async def root():
 
 @router.get("/login", response_class=HTMLResponse)
 async def get_login(request: Request):
+    print("LOGGING IN!")
     state = secrets.token_urlsafe(16)
     nonce = secrets.token_urlsafe(16)
 
@@ -72,6 +73,7 @@ async def get_login(request: Request):
 
 @router.get("/callback", response_class=JSONResponse)
 async def callback(request: Request):
+    print("CALLBACK!")
     try:
         params = request.query_params
         code = params.get("code", None)
@@ -109,12 +111,17 @@ async def callback(request: Request):
             response = await client.post(
                 TOKEN_URL, headers=TOKEN_EXHANGE_HEADERS, data=data
             )
+            for k, v in response.json().items():
+                print(f"{k}: {v}")
 
-        if response.status_code == 200:
-            EXCHANGED_ACCESS_TOKEN = ExchangedAccessTokenResponse(**response.json())
-            print("EXCHANGED ACCESS TOKEN RESPONSE:", EXCHANGED_ACCESS_TOKEN)
-        else:
-            print("Error:", response.status_code, response.text)
+            if response.status_code == 200:
+                json_type = type(response.json())
+                print("JSON TYPE:", json_type)
+                # dict
+                EXCHANGED_ACCESS_TOKEN = ExchangedAccessTokenResponse(**response.json())
+                print("EXCHANGED ACCESS TOKEN RESPONSE:", EXCHANGED_ACCESS_TOKEN)
+            else:
+                print("Error:", response.status_code, response.text)
 
         # set cookies
         tokens = {
@@ -164,7 +171,6 @@ async def account(request: Request):
     }
     """
 
-
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"{access_token}",
@@ -173,7 +179,9 @@ async def account(request: Request):
     print("Headers:", headers)
 
     async with httpx.AsyncClient() as client:
-        response = await client.post(CUSTOMER_API_URL, json={"query": query}, headers=headers)
+        response = await client.post(
+            CUSTOMER_API_URL, json={"query": query}, headers=headers
+        )
         account_info = response.json()
 
     print("Account Info:", account_info)
