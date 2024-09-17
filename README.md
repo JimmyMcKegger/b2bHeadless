@@ -50,7 +50,7 @@ DOMAIN=your-ngrok-domain.ngrok-free.app
 poetry shell && uvicorn main:app --reload
 ```
 
-### 6. Optionally add an exexutable script in your PATH to startup the app:
+### 6. Optionally add an executable script in your PATH to startup the app:
 
 Example script:
 ```
