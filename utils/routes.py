@@ -1,3 +1,4 @@
+from venv import logger
 from fastapi import Request, APIRouter
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -40,6 +41,7 @@ TOKEN_EXHANGE_HEADERS = {
 
 templates = Jinja2Templates(directory="./templates")
 
+
 router = APIRouter()
 
 
@@ -50,7 +52,7 @@ async def root():
 
 @router.get("/login", response_class=HTMLResponse)
 async def get_login(request: Request):
-    print("LOGGING IN!")
+    logger.info("LOGGING IN!")
     state = secrets.token_urlsafe(16)
     nonce = secrets.token_urlsafe(16)
 
@@ -74,11 +76,11 @@ async def get_login(request: Request):
 
 @router.get("/callback", response_class=JSONResponse)
 async def callback(request: Request):
-    print("CALLBACK!")
+    logger.info("CALLBACK!")
     try:
         params = request.query_params
         code = params.get("code", None)
-        print(f"CODE: {code}")
+        logger.info(f"CODE: {code}")
 
         # Obtain initial access token
         async with httpx.AsyncClient() as client:
@@ -94,7 +96,7 @@ async def callback(request: Request):
             )
             INITIAL_ACCESS_TOKEN = InitialAccessTokenResponse(**response.json())
 
-            print("INITIAL ACCESS TOKEN RESPONSE:", INITIAL_ACCESS_TOKEN)
+            logger.info(INITIAL_ACCESS_TOKEN)
 
         # Exchange access token to use it
         data = {
@@ -112,17 +114,12 @@ async def callback(request: Request):
             response = await client.post(
                 TOKEN_URL, headers=TOKEN_EXHANGE_HEADERS, data=data
             )
-            for k, v in response.json().items():
-                print(f"{k}: {v}")
 
             if response.status_code == 200:
-                json_type = type(response.json())
-                print("JSON TYPE:", json_type)
-                # dict
                 EXCHANGED_ACCESS_TOKEN = ExchangedAccessTokenResponse(**response.json())
-                print("EXCHANGED ACCESS TOKEN RESPONSE:", EXCHANGED_ACCESS_TOKEN)
+                logger.info(EXCHANGED_ACCESS_TOKEN)
             else:
-                print("Error:", response.status_code, response.text)
+                logger.info("Error:", response.status_code, response.text)
 
         # set cookies
         tokens = {
@@ -139,7 +136,7 @@ async def callback(request: Request):
         return response
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logger.info(f"An error occurred: {e}")
 
         return JSONResponse(
             status_code=500,
@@ -150,26 +147,22 @@ async def callback(request: Request):
 @router.get("/account")
 async def account(request: Request):
     access_token = request.cookies.get("access_token")
-    print("account page access Token: ", access_token)
+    logger.info(f"Access Token: {access_token}")
     if not access_token:
         return {"error": "No access token found. User may not be logged in."}
-
-    query = customer_query
 
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"{access_token}",
     }
-    print(f"API URL: {CUSTOMER_API_URL}")
-    print("Headers:", headers)
+    logger.info(f"API URL: {CUSTOMER_API_URL}")
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            CUSTOMER_API_URL, json={"query": query}, headers=headers
+            CUSTOMER_API_URL, json={"query": customer_query}, headers=headers
         )
         account_info = response.json()
 
-    print("Account Info:", account_info)
     if "errors" in account_info:
         return {
             "error": "Failed to fetch account info",

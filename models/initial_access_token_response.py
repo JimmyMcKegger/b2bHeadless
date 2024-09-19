@@ -9,3 +9,6 @@ class InitialAccessTokenResponse(BaseModel):
 
     def __repr__(self):
         return f"InitialAccessTokenResponse<access_token='{self.access_token}',\nexpires_in={self.expires_in},\nid_token='{self.id_token}',\nrefresh_token='{self.refresh_token}'>"
+
+    def __str__(self):
+        return f"InitialAccessTokenResponse<access_token='{self.access_token}',\nexpires_in={self.expires_in},\nid_token='{self.id_token}',\nrefresh_token='{self.refresh_token}'>"

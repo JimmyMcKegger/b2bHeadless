@@ -4,23 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopify Auth</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #6c757d;
+            margin-top: 30px;
+        }
+        .account-info {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-logout {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+        .btn-logout:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
-<body>
-    <h1>Welcome to your account</h1>
+<body class="container">
+    <h1>Welcome to Your Account</h1>
     <p>Here are your account details:</p>
 
-    {% if account_info.data.customer %}
-        <h2>Customer Information</h2>
-        <ul>
-            <li><strong>Email Address:</strong> {{ account_info.data.customer.emailAddress.emailAddress }}</li>
-            <li><strong>First Name:</strong> {{ account_info.data.customer.firstName }}</li>
-            <li><strong>Last Name:</strong> {{ account_info.data.customer.lastName }}</li>
-            <li><strong>Tags:</strong> {{ account_info.data.customer.tags | join(', ') }}</li>
-        </ul>
-    {% else %}
-        <p>No customer information available.</p>
-    {% endif %}
+    <div class="account-info">
+        {% if account_info.data.customer %}
+            <h2>Customer Information</h2>
+            <ul class="list-unstyled">
+                <li><strong>Email Address:</strong> {{ account_info.data.customer.emailAddress.emailAddress }}</li>
+                <li><strong>First Name:</strong> {{ account_info.data.customer.firstName }}</li>
+                <li><strong>Last Name:</strong> {{ account_info.data.customer.lastName }}</li>
+                <li><strong>Tags:</strong> {{ account_info.data.customer.tags | join(', ') }}</li>
+            </ul>
+        {% else %}
+            <p>No customer information available.</p>
+        {% endif %}
+    </div>
 
-    <button onclick="window.location.href='/logout'"">Logout</button>
+    <br>
+
+    <button class="btn btn-logout" onclick="window.location.href='/logout'">Logout</button>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
