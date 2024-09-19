@@ -18,7 +18,7 @@ Before you begin, ensure you have the following installed:
 First, clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/JimmyMckegger/customerAccounts.git
+git clone https://github.com/JimmyMckegger/b2bHeadless.git
 cd customerAccounts
 ```
 
