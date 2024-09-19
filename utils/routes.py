@@ -6,6 +6,7 @@ import base64
 import secrets
 import httpx
 from models import InitialAccessTokenResponse, ExchangedAccessTokenResponse
+from queries import customer_query
 from .dependencies import (
     get_redirect_uri,
     get_shop_id,
@@ -153,23 +154,7 @@ async def account(request: Request):
     if not access_token:
         return {"error": "No access token found. User may not be logged in."}
 
-    query = """
-    {
-    shop {
-        id
-    }
-    customer{
-        id
-        emailAddress{
-            emailAddress
-        }
-        creationDate
-        displayName
-        firstName
-        tags
-        }
-    }
-    """
+    query = customer_query
 
     headers = {
         "Content-Type": "application/json",

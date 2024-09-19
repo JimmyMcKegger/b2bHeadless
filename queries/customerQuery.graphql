@@ -1,0 +1,15 @@
+{
+  shop {
+    id
+  }
+  customer {
+    id
+    emailAddress {
+      emailAddress
+    }
+    creationDate
+    displayName
+    firstName
+    tags
+  }
+}

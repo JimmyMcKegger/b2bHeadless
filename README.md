@@ -1,6 +1,6 @@
-# Customer Accounts FastAPI Application
+# Headless B2B site using Shopify Customer Accounts
 
-This project is a FastAPI application that integrates with Shopify's Customer Accounts API with a confidential client. Follow the instructions below to clone the repository, install dependencies, and run the application.
+This project is B2B site built with FastAPI application that integrates with Shopify's Customer Accounts API using a confidential client. Follow the instructions below to clone the repository, install dependencies, and run the application.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ Before you begin, ensure you have the following installed:
 - [Python 3.12](https://www.python.org/downloads/)
 - [Poetry](https://python-poetry.org/docs/#installation)
 - [Ngrok](https://ngrok.com/download)
-- Shopify store with a Hydrogen or Headless sales channel and a Confdential client
+- Shopify Plus store with a Headless sales channel setup to use a Confdential customer accounts client
 
 ## Getting Started
 
