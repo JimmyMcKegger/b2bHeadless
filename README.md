@@ -1,6 +1,6 @@
 # Headless B2B site using Shopify Customer Accounts
 
-This project is B2B site built with FastAPI application that integrates with Shopify's Customer Accounts API using a confidential client. Follow the instructions below to clone the repository, install dependencies, and run the application.
+This project is still a work in progress. It is intenedd to become a B2B site built with FastAPI application that integrates with Shopify's Customer Accounts API using a confidential client. Follow the instructions below to clone the repository, install dependencies, and run the application.
 
 ## Prerequisites
 
@@ -65,12 +65,12 @@ tmux split-window -v
 
 # Select pane 0, navigate to the project directory, and start ngrok
 tmux select-pane -t 0
-tmux send-keys -t $SESSION "cd ~/path/to/project/customerAccounts" C-m
+tmux send-keys -t $SESSION "cd ~/path/to/project/b2bHeadless" C-m
 tmux send-keys -t $SESSION "ngrok http 8000 --domain=your-domain.ngrok-free.app" C-m
 
 # Select pane 1, navigate to the project directory, and start uvicorn
 tmux select-pane -t 1
-tmux send-keys -t $SESSION "cd ~/path/to/project/customerAccounts" C-m
+tmux send-keys -t $SESSION "cd ~/path/to/project/b2bHeadless" C-m
 tmux send-keys -t $SESSION "poetry run uvicorn main:app --reload" C-m
 
 # Attach to the tmux session
