@@ -80,7 +80,6 @@ async def callback(request: Request):
     try:
         params = request.query_params
         code = params.get("code", None)
-        logger.info(f"CODE: {code}")
 
         # Obtain initial access token
         async with httpx.AsyncClient() as client:
@@ -94,7 +93,17 @@ async def callback(request: Request):
                 },
                 headers=TOKEN_EXHANGE_HEADERS,
             )
-            INITIAL_ACCESS_TOKEN = InitialAccessTokenResponse(**response.json())
+            logger.info(response.json())
+            try:
+                INITIAL_ACCESS_TOKEN = InitialAccessTokenResponse(**response.json())
+            except Exception as e:
+                logger.info(f"An error occurred: {e}")
+                for key, value in response.json().items():
+                    logger.info(f"{key}: {value}")
+                return JSONResponse(
+                    status_code=422,
+                    content={"error": "Internal Server Error", "details": str(e)},
+                )
 
             logger.info(INITIAL_ACCESS_TOKEN)
 
