@@ -1,0 +1,9 @@
+mutation storefrontCustomerAccessTokenCreate {
+  storefrontCustomerAccessTokenCreate {
+    customerAccessToken
+    userErrors {
+      field
+      message
+    }
+  }
+}

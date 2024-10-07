@@ -1,6 +1,15 @@
-{
+query customerQuery {
   shop {
     id
+    name
+    email
+    url
+    shopPolicies {
+      id
+      handle
+      body
+      url
+    }
   }
   customer {
     id

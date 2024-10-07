@@ -1,64 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopify Auth</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ account_info.data.shop.name}}</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            background-color: #f8f9fa;
-            color: #343a40;
-        }
-        h1 {
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-        h2 {
-            color: #6c757d;
-            margin-top: 30px;
-        }
-        .account-info {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .btn-logout {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-        }
-        .btn-logout:hover {
-            background-color: #c82333;
-        }
+      body {
+        background-color: #f8f9fa;
+        color: #343a40;
+      }
+      h1 {
+        color: #007bff;
+        margin-bottom: 20px;
+      }
+      h2 {
+        color: #6c757d;
+        margin-top: 30px;
+      }
+      .account-info {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .btn-logout {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+      }
+      .btn-logout:hover {
+        background-color: #c82333;
+      }
     </style>
-</head>
-<body class="container">
+  </head>
+  <body class="container">
     <h1>Welcome to Your Account</h1>
     <p>Here are your account details:</p>
 
     <div class="account-info">
-        {% if account_info.data.customer %}
-            <h2>Customer Information</h2>
-            <ul class="list-unstyled">
-                <li><strong>Email Address:</strong> {{ account_info.data.customer.emailAddress.emailAddress }}</li>
-                <li><strong>First Name:</strong> {{ account_info.data.customer.firstName }}</li>
-                <li><strong>Last Name:</strong> {{ account_info.data.customer.lastName }}</li>
-                <li><strong>Tags:</strong> {{ account_info.data.customer.tags | join(', ') }}</li>
-            </ul>
-        {% else %}
-            <p>No customer information available.</p>
-        {% endif %}
+      {% if account_info.data.customer %}
+      <h2>Customer Information</h2>
+      <ul class="list-unstyled">
+        <li>
+          <strong>Email Address:</strong> {{
+          account_info.data.customer.emailAddress.emailAddress }}
+        </li>
+        <li>
+          <strong>First Name:</strong> {{ account_info.data.customer.firstName
+          }}
+        </li>
+        <li>
+          <strong>Last Name:</strong> {{ account_info.data.customer.lastName }}
+        </li>
+        <li>
+          <strong>Tags:</strong> {{ account_info.data.customer.tags | join(', ')
+          }}
+        </li>
+      </ul>
+      {% else %}
+      <p>No customer information available.</p>
+      {% endif %}
     </div>
 
-    <br>
+    <br />
 
-    <button class="btn btn-logout" onclick="window.location.href='/logout'">Logout</button>
+    <button class="btn btn-logout" onclick="window.location.href='/logout'">
+      Logout
+    </button>
+
+    <!-- CONTACT INFO -->
+    <div class="contact-info">
+      <h2>Contact Information</h2>
+      <ul class="list-unstyled">
+        <li><strong>Email:</strong> {{ account_info.data.shop.email }}</li>
+      </ul>
+    </div>
+
+    <!-- SHOP POLICIES -->
+    <div class="shop-policies">
+      <h2>Shop Policies</h2>
+      <ul class="list-unstyled">
+        {% for policy in account_info.data.shop.shopPolicies %}
+        <li>
+          <strong>{{ policy.name }}:</strong>
+          <a href="{{ policy.url }}" target="_blank">{{ policy.url }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+  </body>
 </html>

@@ -1,3 +1,4 @@
+from traceback import print_tb
 from venv import logger
 from fastapi import Request, APIRouter
 from fastapi.responses import RedirectResponse
@@ -7,7 +8,8 @@ import base64
 import secrets
 import httpx
 from models import InitialAccessTokenResponse, ExchangedAccessTokenResponse
-from queries import customer_query
+from queries import customer_query, customer_locations
+from mutations import sfapi_customer_access_token_create
 from .dependencies import (
     get_redirect_uri,
     get_shop_id,
@@ -156,7 +158,6 @@ async def callback(request: Request):
 @router.get("/account")
 async def account(request: Request):
     access_token = request.cookies.get("access_token")
-    logger.info(f"Access Token: {access_token}")
     if not access_token:
         return {"error": "No access token found. User may not be logged in."}
 
@@ -178,9 +179,79 @@ async def account(request: Request):
             "details": account_info["errors"],
         }
 
-    return templates.TemplateResponse(
+    # Get a Storefront customerAccessToken
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            CUSTOMER_API_URL,
+            json={"query": sfapi_customer_access_token_create},
+            headers=headers,
+        )
+        sfapi_info = response.json()
+
+    if "errors" in sfapi_info:
+        return {
+            "error": "Failed to fetch account info",
+            "details": sfapi_info["errors"],
+        }
+
+    sfapi_token = sfapi_info["data"]["storefrontCustomerAccessTokenCreate"][
+        "customerAccessToken"
+    ]
+
+    print(sfapi_token)
+
+    # Get a Company Location ID
+    """
+    A companyLocationId is the other component needed to contextualize Storefront API queries for B2B and set a buyer identity on cart.
+
+    To obtain a companyLocationId, make a Customer Account API query on the customer to get the locations they have access to.
+
+    If this query returns a single location, save the companyLocationId and move on to Step 3: Contextualize Storefront API Requests
+    Otherwise continue to the next sub section, Building a location selector for a multi-location customer
+    """
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            CUSTOMER_API_URL, json={"query": customer_locations}, headers=headers
+        )
+        locations_info = response.json()
+        print(locations_info)
+        num_locations = len(
+            locations_info["data"]["customer"]["companyContacts"]["edges"]
+        )
+
+    # TODO: Implement a switch statement to handle the different cases of locations_info
+    # no locations redirect to a 'no_account' template and prompt thetm to contact the sotre to setup a b2b account
+    # 1 location, set the companyLocationId and move on to Step 3: Contextualize Storefront API Requests
+    # >1 location, display the locations to the user and allow them to select a location.
+    #   Upon selection, set the companyLocationId and move on to Step 3: Contextualize Storefront API Requests
+    if num_locations == 0:
+        return templates.TemplateResponse(
+            "no_account.html", {"request": request, "account_info": account_info}
+        )
+    elif num_locations == 1:
+        companyLocationId = locations_info["data"]["customer"]["companyContacts"][
+            "edges"
+        ][0]["node"]["company"]["locations"]["edges"][0]["node"]["id"]
+        return templates.TemplateResponse(
+            "account.html",
+            {
+                "request": request,
+                "account_info": account_info,
+                "companyLocationId": companyLocationId,
+            },
+        )
+    else:
+        return templates.TemplateResponse(
+            "location_selector.html",
+            {
+                "request": request,
+                "account_info": account_info,
+                "locations_info": locations_info,
+            },
+        )
+    """   return templates.TemplateResponse(
         "account.html", {"request": request, "account_info": account_info}
-    )
+    ) """
 
 
 @router.get("/logout", response_class=HTMLResponse)

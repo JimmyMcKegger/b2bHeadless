@@ -1,12 +1,11 @@
 import os
 
 
-def load_query(filename):
+def load_gql(filename):
     """Load a GraphQL query from a .graphql file."""
     file_path = os.path.join(os.path.dirname(__file__), filename)
     with open(file_path, "r") as file:
         return file.read()
 
 
-customer_query = load_query("customerQuery.graphql")
-customer_locations = load_query("customerLocations.graphql")
+sfapi_customer_access_token_create = load_gql("storefrontCustomerAccessTokenCreate.graphql")

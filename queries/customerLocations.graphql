@@ -1,0 +1,23 @@
+query customerLocations {
+  customer {
+    id
+    companyContacts(first: 1) {
+      edges {
+        node {
+          company {
+            id
+            name
+            locations(first: 10) {
+              edges {
+                node {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
